@@ -1,0 +1,133 @@
+# =========================================================
+# THE PREMIUM HOUSE - Root .gitignore
+# =========================================================
+
+# ---------------------------------------------------------
+# Environment / Secrets
+# ---------------------------------------------------------
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+!.env.example
+
+# Java / Spring secrets
+application-local.properties
+application-local.yml
+application-local.yaml
+
+# Certificates / private keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# ---------------------------------------------------------
+# React / Vite / Node
+# ---------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Optional package-manager caches
+.npm/
+.yarn/
+.pnpm-store/
+
+# ---------------------------------------------------------
+# Java / Spring Boot / Maven
+# ---------------------------------------------------------
+**/target/
+**/.mvn/timing.properties
+**/hs_err_pid*
+**/replay_pid*
+
+# Maven wrapper generated files / local state
+**/.mvn/wrapper/maven-wrapper.jar
+
+# ---------------------------------------------------------
+# IDE / Editors
+# ---------------------------------------------------------
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# NetBeans
+.nb-gradle/
+nbproject/private/
+
+# ---------------------------------------------------------
+# OS files
+# ---------------------------------------------------------
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ---------------------------------------------------------
+# Logs / Temporary files
+# ---------------------------------------------------------
+*.log
+logs/
+tmp/
+temp/
+
+# ---------------------------------------------------------
+# Test / Local data
+# ---------------------------------------------------------
+login-test.json
+register-test.json
+
+# Local test exports / dumps
+*.dump
+*.bak
+*.tmp
+
+# ---------------------------------------------------------
+# Build / Coverage
+# ---------------------------------------------------------
+coverage/
+.nyc_output/
+*.lcov
+
+# ---------------------------------------------------------
+# Frontend local files
+# ---------------------------------------------------------
+frontend/.env*
+!frontend/.env.example
+
+# ---------------------------------------------------------
+# Backend local files
+# ---------------------------------------------------------
+backend/.env*
+!backend/.env.example
+
+# Spring generated / local runtime files
+**/application-local.properties
+**/application-local.yml
+**/application-local.yaml
+
+# ---------------------------------------------------------
+# Misc
+# ---------------------------------------------------------
+.DS_Store?
+*.swp
+*.swo
+*~
