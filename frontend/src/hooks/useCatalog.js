@@ -27,7 +27,15 @@ export function useCatalog({ search, category }) {
         totalPages: Number(productPage?.totalPages || 0),
       });
 
-      setCategories(Array.isArray(categoryList) ? categoryList : []);
+      const normalizedCategories = Array.isArray(categoryList)
+        ? categoryList
+        : Array.isArray(categoryList?.value)
+          ? categoryList.value
+          : Array.isArray(categoryList?.content)
+            ? categoryList.content
+            : [];
+
+      setCategories(normalizedCategories);
     } catch (err) {
       console.error("Catalog load error:", err);
       setError(

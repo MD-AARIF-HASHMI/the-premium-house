@@ -1,5 +1,7 @@
 package com.premiumhouse.backend.security;
 
+import com.premiumhouse.backend.entity.User;
+import com.premiumhouse.backend.repository.UserRepository;
 import com.premiumhouse.backend.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,14 +16,20 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final UserRepository userRepository;
 
-    public JwtAuthenticationFilter(JwtService jwtService) {
+    public JwtAuthenticationFilter(
+            JwtService jwtService,
+            UserRepository userRepository
+    ) {
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -47,19 +55,54 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            if (jwtService.isTokenValid(token)
-                    && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (!jwtService.isTokenValid(token)) {
+                SecurityContextHolder.clearContext();
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(
+                        "{\"error\":\"Unauthorized\",\"message\":\"Invalid or expired access token.\"}"
+                );
+                return;
+            }
+
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 String email = jwtService.extractEmail(token);
-                String role = jwtService.extractRole(token);
+                Long tokenUserId = jwtService.extractUserId(token);
+
+                User user = userRepository.findByEmailIgnoreCase(email)
+                        .orElse(null);
+
+                if (user == null
+                        || !user.isActive()
+                        || user.getId() == null
+                        || !user.getId().equals(tokenUserId)
+                        || user.getRole() == null
+                        || user.getRole().getName() == null
+                        || user.getRole().getName().isBlank()) {
+
+                    SecurityContextHolder.clearContext();
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(
+                            "{\"error\":\"Unauthorized\",\"message\":\"Account is inactive or token is no longer valid.\"}"
+                    );
+                    return;
+                }
+
+                String currentRole = user.getRole().getName()
+                        .trim()
+                        .toUpperCase(Locale.ROOT);
 
                 List<SimpleGrantedAuthority> authorities = List.of(
-                        new SimpleGrantedAuthority("ROLE_" + role)
+                        new SimpleGrantedAuthority("ROLE_" + currentRole)
                 );
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
-                                email,
+                                user.getEmail(),
                                 null,
                                 authorities
                         );
@@ -72,8 +115,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext()
                         .setAuthentication(authentication);
             }
-        } catch (RuntimeException ignored) {
+        } catch (RuntimeException exception) {
             SecurityContextHolder.clearContext();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(
+                    "{\"error\":\"Unauthorized\",\"message\":\"Invalid or expired access token.\"}"
+            );
+            return;
         }
 
         filterChain.doFilter(request, response);

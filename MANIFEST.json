@@ -1,0 +1,28 @@
+{
+  "package": "THE PREMIUM HOUSE \u2014 Final UI/UX Set",
+  "version": "1.0.0",
+  "purpose": "Standalone buyer-facing responsive implementation matching the supplied reference boards.",
+  "included": [
+    "frontend/package.json",
+    "frontend/index.html",
+    "frontend/vite.config.js",
+    "frontend/src/main.jsx",
+    "frontend/src/data/catalog.js",
+    "frontend/src/components/ProductCard.jsx",
+    "frontend/src/components/Header.jsx",
+    "frontend/src/components/Drawer.jsx",
+    "frontend/src/components/SearchPanel.jsx",
+    "frontend/src/components/ProductModal.jsx",
+    "frontend/src/App.jsx",
+    "frontend/src/styles.css",
+    "docs/README.md",
+    "docs/RESEARCH_NOTES.md",
+    "docs/FINAL_SCREEN_CHECKLIST.md",
+    "database/V14_V15_V16_TARGET.sql"
+  ],
+  "status": {
+    "buyer_ui": "implemented",
+    "backend_integration": "not claimed complete",
+    "database_sql": "target design only; not executable migration"
+  }
+}
